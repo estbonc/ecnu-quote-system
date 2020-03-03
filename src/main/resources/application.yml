@@ -40,10 +40,10 @@ spring:
     urlMappings: /api/*
     jaxrsApplicationClass: com.juran.quote.config.RestJerseyRegister
   redis:
-    host: 47.94.207.68
-    port: 30009
-    password: Redis456123RRSSS
-    database: 13
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
     timeout: 5000
 
 mongodb:

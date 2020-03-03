@@ -1,11 +1,10 @@
 package com.ecnu.paper.quotesystem.service;
 
 import com.alibaba.fastjson.JSON;
-import com.juran.quote.bean.po.Comment;
-import com.juran.quote.bean.request.CommentBean;
-import com.juran.quote.bean.response.CommonRespBean;
-import com.juran.quote.exception.PackageException;
-import com.juran.quote.utils.KeyManagerUtil;
+import com.ecnu.paper.quotesystem.bean.request.CommentBean;
+import com.ecnu.paper.quotesystem.bean.response.CommonRespBean;
+import com.ecnu.paper.quotesystem.exception.PackageException;
+import com.ecnu.paper.quotesystem.utils.KeyManagerUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
