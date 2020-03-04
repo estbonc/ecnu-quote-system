@@ -1,7 +1,7 @@
 package com.ecnu.paper.quotesystem.bean.dto;
 
+import com.ecnu.paper.quotesystem.bean.response.GetQuoteSummaryPriceRespBean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.juran.quote.bean.response.GetQuoteSummaryPriceRespBean;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

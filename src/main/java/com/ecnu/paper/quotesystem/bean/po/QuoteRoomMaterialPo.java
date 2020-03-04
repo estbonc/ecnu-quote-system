@@ -1,8 +1,8 @@
 package com.ecnu.paper.quotesystem.bean.po;
 
+import com.ecnu.paper.quotesystem.bean.enums.QuoteItemTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Lists;
-import com.juran.quote.bean.enums.QuoteItemTypeEnum;
 import lombok.Data;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -29,7 +29,6 @@ public class QuoteRoomMaterialPo implements Serializable {
     /**
      * 主材类型
      *
-     * @see com.juran.quote.bean.enums.QuoteItemTypeEnum
      */
     private String quoteItemType = QuoteItemTypeEnum.INNER_MM.getType();
 

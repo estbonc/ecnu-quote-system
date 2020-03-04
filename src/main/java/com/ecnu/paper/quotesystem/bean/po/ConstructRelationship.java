@@ -1,12 +1,13 @@
 package com.ecnu.paper.quotesystem.bean.po;
 
+import com.ecnu.paper.quotesystem.bean.dto.BindMaterial;
+import com.ecnu.paper.quotesystem.bean.dto.BindRoom;
 import com.google.common.collect.Lists;
-import com.juran.quote.bean.dto.BindMaterial;
-import com.juran.quote.bean.dto.BindRoom;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+
 
 @Data
 @Document(collection = "constructRelationship")

@@ -1,6 +1,6 @@
 package com.ecnu.paper.quotesystem.bean.po;
 
-import com.juran.quote.bean.quote.BomDto;
+import com.ecnu.paper.quotesystem.bean.quote.BomDto;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,7 +19,7 @@ public class QuotePo {
      * 3D-设计方案ID
      *
      * @see BomDto.acsAssetID
-     */
+     */GetCaseQuotationRespBean
     private String designId;
     /**
      * 项目ID

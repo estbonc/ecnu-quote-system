@@ -1,22 +1,36 @@
 package com.ecnu.paper.quotesystem.service;
 
+import com.ecnu.paper.quotesystem.bean.dto.ServiceResponse;
+import com.ecnu.paper.quotesystem.bean.enums.QuoteHouseEnum;
+import com.ecnu.paper.quotesystem.bean.exception.ParentException;
+import com.ecnu.paper.quotesystem.bean.po.BagConstruct;
+import com.ecnu.paper.quotesystem.bean.po.Brand;
+import com.ecnu.paper.quotesystem.bean.po.Package;
+import com.ecnu.paper.quotesystem.bean.po.PackageBackup;
+import com.ecnu.paper.quotesystem.bean.po.PackageBag;
+import com.ecnu.paper.quotesystem.bean.po.PackagePrice;
+import com.ecnu.paper.quotesystem.bean.po.PackageRoom;
+import com.ecnu.paper.quotesystem.bean.po.PackageVersion;
+import com.ecnu.paper.quotesystem.bean.po.PackageVersionBackup;
+import com.ecnu.paper.quotesystem.bean.po.Product;
+import com.ecnu.paper.quotesystem.bean.po.StorePo;
+import com.ecnu.paper.quotesystem.bean.request.PackageRequestBean;
+import com.ecnu.paper.quotesystem.bean.request.PackageVersionRequestBean;
+import com.ecnu.paper.quotesystem.bean.response.CommonRespBean;
+import com.ecnu.paper.quotesystem.bean.response.GetDefaultPkgPriceRespBean;
+import com.ecnu.paper.quotesystem.bean.response.PackageVersionResponseBean;
+import com.ecnu.paper.quotesystem.bean.response.StoreRespBean;
+import com.ecnu.paper.quotesystem.config.QuoteConfig;
+import com.ecnu.paper.quotesystem.exception.PackageException;
+import com.ecnu.paper.quotesystem.utils.CacheUtil;
+import com.ecnu.paper.quotesystem.utils.ClassUtil;
+import com.ecnu.paper.quotesystem.utils.CommonStaticConst;
+import com.ecnu.paper.quotesystem.utils.KeyManagerUtil;
+import com.ecnu.paper.quotesystem.utils.LogAnnotation;
+import com.ecnu.paper.quotesystem.utils.MDQueryUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.juran.core.exception.ParentException;
-import com.juran.quote.bean.dto.ServiceResponse;
-import com.juran.quote.bean.enums.QuoteHouseEnum;
-import com.juran.quote.bean.po.*;
-import com.juran.quote.bean.po.Package;
-import com.juran.quote.bean.request.PackageRequestBean;
-import com.juran.quote.bean.request.PackageVersionRequestBean;
-import com.juran.quote.bean.response.CommonRespBean;
-import com.juran.quote.bean.response.GetDefaultPkgPriceRespBean;
-import com.juran.quote.bean.response.PackageVersionResponseBean;
-import com.juran.quote.bean.response.StoreRespBean;
-import com.juran.quote.config.QuoteConfig;
-import com.juran.quote.exception.PackageException;
-import com.juran.quote.utils.*;
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 import org.springframework.beans.BeanUtils;
@@ -39,7 +53,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.juran.quote.utils.CommonStaticConst.Common.ENABLE_STATUS;
+import static com.ecnu.paper.quotesystem.utils.CommonStaticConst.Common.ENABLE_STATUS;
 
 @Service
 public class PackageService extends BaseService {
@@ -112,7 +126,7 @@ public class PackageService extends BaseService {
         basicDBObject.put("store", new BasicDBObject("$in", Lists.newArrayList(storeId)));
         Query basicQuery = MDQueryUtil.getDBObjectByValues(basicDBObject);
         List<PackageVersion> retList = mongoTemplate.find(basicQuery, PackageVersion.class);
-        return CollectionUtils.isEmpty(retList)? new ArrayList<>():retList;
+        return CollectionUtils.isEmpty(retList) ? new ArrayList<>() : retList;
     }
 
     public List<Package> queryStoreAllPackage(String storeId) {
@@ -161,18 +175,18 @@ public class PackageService extends BaseService {
                                                             String store,
                                                             Long versionId) {
         Criteria criatira = new Criteria();
-        if(!StringUtils.isEmpty(version)) criatira.and(CommonStaticConst.Package.VERSION).is(version);
-        if(packageId != null) criatira.and(CommonStaticConst.Package.PACKAGE_ID).is(packageId);
-        if(startTime != null) criatira.and(CommonStaticConst.Package.START_TIME).lte(new Date(startTime + 86400000));
-        if(endTime != null) criatira.and(CommonStaticConst.Package.END_TIME).gte(new Date(endTime));
-        if(!StringUtils.isEmpty(region)) criatira.and(CommonStaticConst.Package.REGION).is(region);
-        if(!StringUtils.isEmpty(store)) criatira.and(CommonStaticConst.Package.STORE).is(store);
-        if(versionId != null) criatira.and(CommonStaticConst.Package.PACKAGE_VERSION_ID).is(versionId);
+        if (!StringUtils.isEmpty(version)) criatira.and(CommonStaticConst.Package.VERSION).is(version);
+        if (packageId != null) criatira.and(CommonStaticConst.Package.PACKAGE_ID).is(packageId);
+        if (startTime != null) criatira.and(CommonStaticConst.Package.START_TIME).lte(new Date(startTime + 86400000));
+        if (endTime != null) criatira.and(CommonStaticConst.Package.END_TIME).gte(new Date(endTime));
+        if (!StringUtils.isEmpty(region)) criatira.and(CommonStaticConst.Package.REGION).is(region);
+        if (!StringUtils.isEmpty(store)) criatira.and(CommonStaticConst.Package.STORE).is(store);
+        if (versionId != null) criatira.and(CommonStaticConst.Package.PACKAGE_VERSION_ID).is(versionId);
         Query basicQuery = new Query(criatira);
 
-        List<PackageVersionResponseBean> responseList= new ArrayList<>();
+        List<PackageVersionResponseBean> responseList = new ArrayList<>();
         List<PackageVersion> versions = mongoTemplate.find(basicQuery, PackageVersion.class);
-        if(!CollectionUtils.isEmpty(versions)){
+        if (!CollectionUtils.isEmpty(versions)) {
             Map<String, Object> queryParams = Maps.newHashMap();
             responseList = versions.stream().map(v -> {
                 queryParams.clear();
@@ -180,17 +194,17 @@ public class PackageService extends BaseService {
                 PackageVersionResponseBean responseBean = new PackageVersionResponseBean();
                 List<Package> pkgs = getAllPackagesWithFilter(queryParams);
                 responseBean.setVersion(v.getVersion());
-                responseBean.setPackageName(StringUtils.isEmpty(pkgs)?"":pkgs.get(0).getPackageName());
+                responseBean.setPackageName(StringUtils.isEmpty(pkgs) ? "" : pkgs.get(0).getPackageName());
                 responseBean.setPackageVersionId(v.getPackageVersionId());
                 responseBean.setStartTime(v.getStartTime().getTime());
                 responseBean.setEndTime(v.getEndTime().getTime());
                 responseBean.setRegion(v.getRegion());
                 List<StoreRespBean> stores = new ArrayList<>();
-                if(!CollectionUtils.isEmpty(v.getStores())){
-                        stores =  v.getStores().stream().map(s-> {
+                if (!CollectionUtils.isEmpty(v.getStores())) {
+                    stores = v.getStores().stream().map(s -> {
                         StorePo sto = cacheUtil.getStore(s);
                         StoreRespBean storeRespBean = new StoreRespBean();
-                        if(sto != null) {
+                        if (sto != null) {
                             BeanUtils.copyProperties(sto, storeRespBean);
                             return storeRespBean;
                         }
@@ -276,8 +290,8 @@ public class PackageService extends BaseService {
     public List<PackageRoom> queryConstructRoom(Long packageVersionId, Long constructId, String houseType) {
         Map<String, Object> valuesMap = Maps.newHashMap();
         valuesMap.put(CommonStaticConst.Package.PACKAGE_VERSION_ID, packageVersionId);
-        if(constructId != null) valuesMap.put("selectedConstruct.cid", constructId);
-        if(!StringUtils.isEmpty(houseType)) valuesMap.put(CommonStaticConst.Package.HOUSE_TYPE, houseType);
+        if (constructId != null) valuesMap.put("selectedConstruct.cid", constructId);
+        if (!StringUtils.isEmpty(houseType)) valuesMap.put(CommonStaticConst.Package.HOUSE_TYPE, houseType);
         Query basicQuery = MDQueryUtil.getDBObjectByValuesAndLike(valuesMap, Lists.newArrayList());
         return mongoTemplate.find(basicQuery, PackageRoom.class);
     }
@@ -312,8 +326,8 @@ public class PackageService extends BaseService {
         String message;
         Package target = new Package();
         BeanUtils.copyProperties(pkg, target);
-        target.setStatus(CommonStaticConst.Common.ENABLE_STATUS);
-        if(pkg.getPackageId() == null) target.setPackageId(keyManagerUtil.getUniqueId());
+        target.setStatus(ENABLE_STATUS);
+        if (pkg.getPackageId() == null) target.setPackageId(keyManagerUtil.getUniqueId());
 
         Map<String, Object> valuesMap = Maps.newHashMap();
         valuesMap.put(CommonStaticConst.Package.PACKAGE_ID, target.getPackageId());
@@ -330,7 +344,7 @@ public class PackageService extends BaseService {
             logger.error("创建套餐异常 %s", e);
             throw new PackageException("创建套餐异常");
         }
-        return new CommonRespBean(new CommonRespBean.Status(CommonRespBean.Status.SUCCESS,"创建套餐成功"));
+        return new CommonRespBean(new CommonRespBean.Status(CommonRespBean.Status.SUCCESS, "创建套餐成功"));
     }
 
     public Boolean removePackage(Package pkg) throws PackageException {
@@ -359,11 +373,11 @@ public class PackageService extends BaseService {
         String message;
         PackageVersion version = new PackageVersion();
         BeanUtils.copyProperties(packageVersion, version);
-        version.setStatus(CommonStaticConst.Common.ENABLE_STATUS);
+        version.setStatus(ENABLE_STATUS);
         version.setUpdateTime(new Date());
         version.setStartTime(new Date(packageVersion.getStartTime()));
         version.setEndTime(new Date(packageVersion.getEndTime()));
-        if(packageVersion.getPackageVersionId() == null) version.setPackageVersionId(keyManagerUtil.getUniqueId());
+        if (packageVersion.getPackageVersionId() == null) version.setPackageVersionId(keyManagerUtil.getUniqueId());
         Map<String, Object> valuesMap = Maps.newHashMap();
         valuesMap.put(CommonStaticConst.Package.PACKAGE_VERSION_ID, version.getPackageVersionId());
         Query basicQuery = MDQueryUtil.getDBObjectByValues(valuesMap);
@@ -493,7 +507,7 @@ public class PackageService extends BaseService {
         try {
             removePackageVersion(version.getPackageVersionId());
         } catch (PackageException e) {
-            throw  new PackageException("删除套餐版本异常");
+            throw new PackageException("删除套餐版本异常");
         }
         return true;
     }
@@ -633,19 +647,19 @@ public class PackageService extends BaseService {
         if (pkg == null) {
             message = String.format("套餐已经不存在或者已经删除");
             logger.info(message);
-            return new ServiceResponse(true,"套餐已经不存在或者已经删除");
+            return new ServiceResponse(true, "套餐已经不存在或者已经删除");
         }
         try {
             if (!backUpPackage(pkg)) {
                 message = String.format("备份套餐%d失败", pkg.getPackageId());
                 logger.error(message);
-                new ServiceResponse(false,message);
+                new ServiceResponse(false, message);
             }
             WriteResult result = mongoTemplate.remove(basicQuery, Package.class);
             if (result.getN() == 0) {
                 message = String.format("删除套餐%d失败", pkg.getPackageId());
                 logger.error(message);
-                new ServiceResponse(false,message);
+                new ServiceResponse(false, message);
             }
         } catch (RuntimeException e) {
             message = String.format("删除套餐操作异常 , 异常信息：%s", e);
@@ -654,7 +668,7 @@ public class PackageService extends BaseService {
         }
         message = String.format("删除套餐%d成功", pkg.getPackageId());
         logger.info(message);
-        return new ServiceResponse(true,message);
+        return new ServiceResponse(true, message);
     }
 
     public List<StorePo> queryStores(String region) {
