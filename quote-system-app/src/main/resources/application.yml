@@ -18,7 +18,7 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
-      defaultZone: http://Alp-hb2-a-erek-1:8080/eureka/,http://Alp-hb2-a-erek-2:8080/eureka/,http://Alp-hb2-a-erek-3:8080/eureka/
+      defaultZone:
 
 
 feign:
@@ -47,11 +47,11 @@ eventlog:
 
 mdm-app:
   feign:
-    url: 47.94.207.68:30031
+    url:
 jrDesign-app:
   feign:
-#    url: 47.94.207.68:40029
-    url: 47.94.207.68:30043
+#    url:
+    url:
 
 spring:
   application:
@@ -67,11 +67,11 @@ spring:
     urlMappings: /api/*
     jaxrsApplicationClass: com.juran.quote.config.RestJerseyRegister
   redis:
-      host: 47.94.207.68
-      port: 30009
-      password: Redis456123RRSSS
-      database: 13
-      timeout: 5000
+      host:
+      port:
+      password:
+      database:
+      timeout:
       pool:
         max-active: -1
         max-idle: 8
@@ -81,16 +81,15 @@ spring:
 mongodb:
   base:
     enabled: true
-    hostPort: 47.94.207.68:30008
-    userName: pUser
-    passWord: pUser
-    database: quote
+    hostPort:
+    userName:
+    passWord:
+    database:
     connectTimeout: 8000  #连接超时
     socketTimeout: 8000   #执行时间超时
     serverSelectionTimeout: 8000   #等待应用程序超时
     accessEnvironment: local  #local:将会采用url方式连接,server:将会采用上面的方式连接
-#    url: mongodb://pUser:pUser@dds-2ze69b666695b6642423-pub.mongodb.rds.aliyuncs.com:3717/quote?socketTimeout=8000&connectTimeout=8000&serverSelectionTimeout=8000
-    url: mongodb://pUser:pUser@dds-2ze909f9667243741883-pub.mongodb.rds.aliyuncs.com:3717/quote?socketTimeout=8000&connectTimeout=8000&serverSelectionTimeout=8000
+    url:
 
 
 
@@ -116,15 +115,15 @@ id.generator:
   enabled: true
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://alp-hb2-a-emall-external.mysql.rds.aliyuncs.com:3306/id_generator?useUnicode=true&characterEncoding=utf-8
-    username: sjjdev
-    password: CqJcZ*4@5%8#Mg
-    maxActive: 10
-    initialSize: 1
+    url:
+    username:
+    password:
+    maxActive:
+    initialSize:
 
 #keyManager配置
 keyManagerConfig:
-  sendUrl: http://47.94.207.68:30049
+  sendUrl:
 
 #报价配置
 quote:
@@ -133,8 +132,8 @@ quote:
   defaultOldPackageId: 300025
   tokenName: sjj_token_alpha
   user: user_alpha
-  shareUrl: https://alpha-www.homestyler.com/cn/share/quoteShare/{0}
-  quoteResultUrl: https://alpha-www.homestyler.com/cn/quoteResult/{0}
+  shareUrl: h
+  quoteResultUrl:
 
 #3D路径配置
 thirdUrl:
