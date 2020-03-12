@@ -1,0 +1,173 @@
+#!groovy
+
+node('shejijia_build'){
+    currentBuild.result="SUCCESS"
+    
+    try{
+        stage("init") {
+            deleteDir()
+           
+            source_code_path="${env.WORKSPACE}"
+            configs_path="${env.WORKSPACE}/configs"
+            scripts_path="${env.WORKSPACE}/cicd"
+ 
+            work_dir="${source_code_path}"
+            package_path="${source_code_path}/${env.PACKAGE_RELATIVE_PATH}"
+
+            maven_properites_file="${env.WORKSPACE}/maven.properties"
+            commits_log_file="${env.WORKSPACE}/commits_message.txt"
+            compile_log_file="${env.WORKSPACE}/compile_log.txt"
+
+            sh "rm -rf ${maven_properites_file} ${commits_log_file} ${compile_log_file}"
+
+            maven_pav_extractor_script="${scripts_path}/scripts/pom_extractor.py"
+ 
+            // init message to empty string - it will be included in notification email
+            opt_message = 'SUCCESS'
+
+        }
+       
+        stage('checkout source code') {
+            dir("${source_code_path}") {
+                checkout scm
+            }
+        }
+    
+        stage('checkout configs') {
+            dir("${configs_path}") {
+                git changelog: false, poll: false, branch: 'master', url: "git@gitlab-dev.shejijia.com:Foundation-Services/configs.git"
+            }
+        }
+  
+        stage('checkout scripts') {
+            dir("${scripts_path}") {
+                git changelog: false, poll: false, branch: 'master', url: "git@gitlab-dev.shejijia.com:Foundation-Services/ld-configs.git"
+            }
+        }
+
+        stage('get the maven GAV') {
+            sh "python ${maven_pav_extractor_script} '${work_dir}/pom.xml' '${maven_properites_file}'"
+            props = readProperties file: "${maven_properites_file}"
+            version = props["maven_version"]
+            artifactId = props["maven_artifactId"]
+            groupId = props["maven_groupId"]
+        }
+        
+        stage('update the config files') {
+            if ( "${DEPLOY}" == "true" ) { 
+                sh "cp ${configs_path}/${env.CONFIG_MODULE_NAME}/${env.CONFIG_ENVIRONMENT}/* ${source_code_path}/${env.MODULE_NAME}/src/main/resources/" 
+            }
+
+        }
+
+        stage('prepare maven build environment') {
+            if (fileExists("${work_dir}/.mvn")){
+                println "Found maven wrapper"
+                sh "echo -s ${env.MAVEN_SETTINGS_FILE} > ${work_dir}/.mvn/maven.config" 
+                if (fileExists("${work_dir}/mvnw")){
+                    maven_cmd="${work_dir}/mvnw"
+                }
+            }
+            else {
+                maven_cmd="mvn"
+            }
+
+            println "Current maven build command is $maven_cmd"
+        }     
+ 
+        stage('build') {
+            sh "cd ${work_dir} && ${maven_cmd} clean compile package deploy -P${env.ENVIRONMENT} -Dmaven.repo.local=${env.REPO_LOCAL} -Dmaven.test.skip=true -DaltDeploymentRepository=${env.REPO_REMOTE} > ${compile_log_file} || echo Compile failed"
+            compile_result=sh(returnStdout: true, script: "fgrep [ERROR] ${compile_log_file} || echo PASS").trim()
+            echo "compile result: ${compile_result}"
+
+            if (!compile_result.equals("PASS")) {
+                sh "exit 1"
+            }
+        }
+
+        stage('archive artifacts') {
+            if ("${env.DEPLOY}" == "true") {
+                sh "cd ${package_path} && mv *.${env.PACKAGE_TYPE} ${env.WORKSPACE}/${env.MODULE_NAME}_build_${env.BUILD_NUMBER}.${env.PACKAGE_TYPE}"
+                archiveArtifacts artifacts: "${env.MODULE_NAME}*.${env.PACKAGE_TYPE}", onlyIfSuccessful: true  
+            }
+        }
+
+    }
+    catch (err)
+    {
+        currentBuild.result = "FAILURE"
+        opt_message = "${err}"
+        throw err
+    }
+    finally
+    {
+        stage('get changes'){
+            sh "echo > ${commits_log_file}"
+            try{
+                def changelog_sets = currentBuild.changeSets
+                changes=changelog_sets.size()
+
+                commits=""
+
+                if (changes == 0) {
+                    println "This is no change from last build!"
+                }
+                else {
+                    for (int i = 0; i < changes; i++) {
+                        def entries = changelog_sets[i].items
+
+                        for (int j = 0; j < entries.length; j++) {
+                            def entry = entries[j]
+                            println "${entry.commitId} by ${entry.author}\n ${entry.msg}"
+                            sh "cd ${work_dir} && git show ${commits} --format=short --quiet > ${commits_log_file}"
+                            commits="${commits}" + " ${entry.commitId}"
+                       }
+                    }
+               }
+            }
+            catch(err) {
+              println "Failed to get the code changes due to ${err}"
+            }
+        }
+        
+        stage('archive other files') {
+            if ("${env.DEPLOY}" == "true") {
+                sh "cd ${env.WORKSPACE} && echo ${env.BUILD_NUMBER} >> remote_version && echo ${env.BUILD_NUMBER} >> build.txt"
+                sh "cd ${env.WORKSPACE} && cp commits_message.txt commits_message_build_${env.BUILD_NUMBER}.txt"
+                archiveArtifacts artifacts: "commits_message_build*.txt,remote_version,build.txt", onlyIfSuccessful: true
+            }
+        }
+        
+        stage('send notification') {
+            message=sh(returnStdout: true, script: "cat ${commits_log_file}").trim()
+            if ("${message}" == "") {
+                message="There is no new commits from last build"
+            }
+            else {
+                message="There are the following commits from last build:\n" + message
+            }
+
+            if ("$opt_message" == "SUCCESS") {
+                subject="${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful!"
+            }
+            else{
+                subject="Build failed in Jenkins: ${env.JOB_NAME} - Build # ${env.BUILD_NUMBER}"
+                if ("${compile_result}" != "PASS" ) {
+                      message="Please check the following compile error:\n${compile_result}\n\n" + message
+                }
+                else {
+                    message="Please check the following build error:\n${opt_message}\n\n" + message
+                }
+            }
+
+           // mail subject: "${subject}",
+            //     body: "${message}",
+              //   to: "${env.RECIPIENTS}",
+                // replyTo: "${env.RECIPIENTS}",   
+                 //from: "ops.robot@juran.com.cn"
+        }
+    }
+
+}
+
+

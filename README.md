@@ -1,28 +1,40 @@
-# Read Me First
-The following was discovered as part of building this project:
+# **报价系统** #
 
-* The original package name 'com.ecnu.paper.quote-system' is invalid and this project uses 'com.ecnu.paper.quotesystem' instead.
+## 报价系统是什么 ##
 
-# Getting Started
+报价系统是居然网络设计工具配套报价引擎，支持基于装饰公司报价逻辑的报价系统。
+## 报价系统功能模块 ##
+报价系统功能模块主要有两大块，一块是报价系统管理平台，集成在运营管理后台。运营人员通过管理平台管理报价所需基础数据。另外一块是报价逻辑，报价引擎基于报价基数数据以及3D设计导出设计方案报价。
+## 报价系统使用说明 ##
 
-### Reference Documentation
-For further reference, please consider the following sections:
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/maven-plugin/)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/htmlsingle/#boot-features-developing-web-applications)
-* [MyBatis Framework](https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-* [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/htmlsingle/#production-ready)
+- 报价系统运营管理
 
-### Guides
-The following guides illustrate how to use some features concretely:
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
-* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
-* [MyBatis Quick Start](https://github.com/mybatis/spring-boot-starter/wiki/Quick-Start)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Building a RESTful Web Service with Spring Boot Actuator](https://spring.io/guides/gs/actuator-service/)
+**套餐管理**
 
+**套餐版本管理**
+
+**套餐价格管理**
+
+**套餐施工项管理**
+
+**施工项管理**
+
+**套餐主材管理**
+
+**套餐空间管理**
+
+**套餐礼包管理**
+
+- 报价流程
+
+**3D工具导出报价**
+
+**填写报价基本信息**
+
+**匹配设计空间**
+
+**匹配设计主材以及施工项**
+
+**结束报价**
