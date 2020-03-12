@@ -16,10 +16,10 @@ import org.springframework.web.client.RestTemplate;
  * Hello world!
  */
 @SpringBootApplication
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableFeignClients(basePackages = {"com.juran.quote.feign", "com.juran.mdm.client.feign", "com.juran.application.design.feign", "com.juran.mdm.price.client"})
 @ComponentScan(basePackages = {"com.juran"})
-@EnableCircuitBreaker
+//@EnableCircuitBreaker
 @ServletComponentScan
 @EnableAsync
 public class QuoteSystemApplication {
