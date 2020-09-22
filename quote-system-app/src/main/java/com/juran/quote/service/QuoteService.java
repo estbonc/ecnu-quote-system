@@ -159,7 +159,7 @@ public class QuoteService extends BaseService {
                 bomRoom.setRoomType("");
             }
             bomRoom.setRoomName(room.getRoomName());
-            BigDecimal area = BigDecimal.valueOf(Double.valueOf(room.getArea())).setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal area = BigDecimal.valueOf(Double.parseDouble(room.getArea())).setScale(2, BigDecimal.ROUND_HALF_UP);
             bomRoom.setArea(area.toPlainString());
             return bomRoom;
         }).collect(Collectors.toList());

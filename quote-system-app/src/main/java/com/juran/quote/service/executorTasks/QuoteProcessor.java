@@ -75,7 +75,7 @@ public class QuoteProcessor extends BaseService {
                     //如果报价已经包含该房间，更新该房间的报价，否则新创建房间
                     if (room.isPresent()) {
                         //房间面积累加
-                        BigDecimal roomArea = room.get().getArea().add(BigDecimal.valueOf(Double.valueOf(bomRoom.getArea())));
+                        BigDecimal roomArea = room.get().getArea().add(BigDecimal.valueOf(Double.parseDouble(bomRoom.getArea())));
                         room.get().setArea(roomArea.setScale(2, BigDecimal.ROUND_HALF_UP));
                         //更新商品信息
                         updateMaterialInQuoteRoom(bom.getBomList(), room.get());
@@ -85,9 +85,9 @@ public class QuoteProcessor extends BaseService {
                         quoteRoom.setRoomType(bomRoom.getRoomType());
                         quoteRoom.setRoomID(bomRoom.getRoomID());
                         quoteRoom.setRoomName(bomRoom.getRoomName());
-                        quoteRoom.setArea(BigDecimal.valueOf(Double.valueOf(bomRoom.getArea())).setScale(2, BigDecimal.ROUND_HALF_UP));
-                        quoteRoom.setHeight(BigDecimal.valueOf(Double.valueOf(bomRoom.getHeight())).setScale(2, BigDecimal.ROUND_HALF_UP));
-                        quoteRoom.setPerimeter(BigDecimal.valueOf(Double.valueOf(bomRoom.getPerimeter())).setScale(2, BigDecimal.ROUND_HALF_UP));
+                        quoteRoom.setArea(BigDecimal.valueOf(Double.parseDouble(bomRoom.getArea())).setScale(2, BigDecimal.ROUND_HALF_UP));
+                        quoteRoom.setHeight(BigDecimal.valueOf(Double.parseDouble(bomRoom.getHeight())).setScale(2, BigDecimal.ROUND_HALF_UP));
+                        quoteRoom.setPerimeter(BigDecimal.valueOf(Double.parseDouble(bomRoom.getPerimeter())).setScale(2, BigDecimal.ROUND_HALF_UP));
 
                         initMaterialInQuoteRoom(bom.getBomList(), bomRoom, quoteRoom);
                         quote.getRooms().add(quoteRoom);
@@ -132,10 +132,10 @@ public class QuoteProcessor extends BaseService {
         List<String> softMaterialCategories = MaterialTypeEnum.getCategory(productBomType);
 
         //商品数量清零以方便后面对重复商品数量累加
-        quoteRoomPo.getSoftDecorationMaterials().stream().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
-        quoteRoomPo.getHardDecorationMaterials().stream().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
-        quoteRoomPo.getInvalidSoftDecorationMaterials().stream().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
-        quoteRoomPo.getInvalidHardDecorationMaterials().stream().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
+        quoteRoomPo.getSoftDecorationMaterials().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
+        quoteRoomPo.getHardDecorationMaterials().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
+        quoteRoomPo.getInvalidSoftDecorationMaterials().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
+        quoteRoomPo.getInvalidHardDecorationMaterials().forEach(m -> m.setUsedQuantity(BigDecimal.ZERO));
         //根据bom更新房间内的商品
         bomItemsInThisRoom.forEach(material -> {
             if (softMaterialCategories.contains(material.getType())) {
