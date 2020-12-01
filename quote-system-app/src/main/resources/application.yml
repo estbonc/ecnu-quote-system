@@ -67,7 +67,7 @@ mongodb:
     socketTimeout: 8000   #执行时间超时
     serverSelectionTimeout: 8000   #等待应用程序超时
     accessEnvironment: local  #local:将会采用url方式连接,server:将会采用上面的方式连接
-    url: mongodb://114.55.33.211:27017/quote?socketTimeout=8000&connectTimeout=8000&serverSelectionTimeout=8000
+    url: mongodb://81.69.162.101:27017/quote?socketTimeout=8000&connectTimeout=8000&serverSelectionTimeout=8000
 
 springfox:
   config:

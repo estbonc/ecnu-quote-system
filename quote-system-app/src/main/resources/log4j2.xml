@@ -3,17 +3,17 @@
 <Configuration monitorInterval="60">
     <Properties>
         <!-- <Property name="log_base_path">d:/temp</Property> -->
-        <Property name="host_name">${env:HOSTNAME}</Property>
-        <Property name="log_base_path">/home/admin/tomcat/${host_name}</Property>
-        <Property name="log_path">${log_base_path}/logs</Property>
-        <Property name="eventlog_path">${log_base_path}/eventlogs</Property>
+        <Property name="host_name">lss</Property>
+        <Property name="log_base_path">D:\home\admin\tomcat\${host_name}</Property>
+        <Property name="log_path">${log_base_path}\logs</Property>
+        <Property name="eventlog_path">${log_base_path}\eventlogs</Property>
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d ${host_name} %p [%C{1}.%M():%L] - %m%n"/>
         </Console>
-        <RollingFile name="thirdPartyAppender" fileName="${log_path}/thirdParty.log" append="true"
-                     filePattern="${log_path}/thirdParty-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="thirdPartyAppender" fileName="${log_path}\thirdParty.log" append="true"
+                     filePattern="${log_path}\thirdParty-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="%d ${host_name} %p [%c] - %m%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
