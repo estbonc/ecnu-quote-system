@@ -1,6 +1,5 @@
 package com.juran.quote.bean.po;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 

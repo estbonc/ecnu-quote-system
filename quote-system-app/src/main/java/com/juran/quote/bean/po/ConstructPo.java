@@ -30,19 +30,19 @@ public class ConstructPo implements Serializable {
      */
     private String batchNum;
     /**
-     * 施工项类别
+     * 施工项类别   (标砖项目 /自定义项目等)
      */
     private String constructCategory;
     /**
-     * 施工项分类
+     * 施工项分类  安装
      */
     private String constructItem;
     /**
-     * 施工项编码
+     * 施工项编码 TC01
      */
     private String constructCode;
     /**
-     * 施工项名称
+     * 施工项名称  水电09
      */
     private String constructName;
     /**
