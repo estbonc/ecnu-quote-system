@@ -18,6 +18,11 @@ public class ChargeTypeRequestBean {
     @ApiModelProperty("装饰公司")
     private String decorationCompany;
 
+    /**
+     *  FIXED_CHARGE(1, "固定收费"),
+     * RATE_CHARGE(2, "按比例收费");
+     *
+     */
     @ApiModelProperty("费用类型")
     private String chargeType;
 
