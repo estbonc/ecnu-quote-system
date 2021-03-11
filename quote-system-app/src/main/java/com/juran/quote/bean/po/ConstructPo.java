@@ -30,7 +30,7 @@ public class ConstructPo implements Serializable {
      */
     private String batchNum;
     /**
-     * 施工项类别   (标砖项目 /自定义项目等)
+     * 施工项类别   (标准项目 /自定义项目等)
      */
     private String constructCategory;
     /**
