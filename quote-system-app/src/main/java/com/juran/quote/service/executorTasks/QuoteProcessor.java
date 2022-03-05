@@ -65,7 +65,6 @@ public class QuoteProcessor extends BaseService {
                 }
                 //房屋面积全部置零，以便后面房间合并时面积累加
                 quote.getRooms().forEach(room -> room.setArea(BigDecimal.ZERO));
-
                 for (BomRoomDto bomRoom : bom.getRoomList()) {
                     Optional<QuoteRoomDto> room = quote.getRooms()
                             .stream()
@@ -75,9 +74,10 @@ public class QuoteProcessor extends BaseService {
                     //如果报价已经包含该房间，更新该房间的报价，否则新创建房间
                     if (room.isPresent()) {
                         //房间面积累加
-                        BigDecimal roomArea = room.get().getArea().add(BigDecimal.valueOf(Double.parseDouble(bomRoom.getArea())));
+                        BigDecimal roomArea = room.get().getArea().add(BigDecimal
+                                .valueOf(Double.parseDouble(bomRoom.getArea())));
                         room.get().setArea(roomArea.setScale(2, BigDecimal.ROUND_HALF_UP));
-                        //更新商品信息
+                        //解析更新空间内主材的数据
                         updateMaterialInQuoteRoom(bom.getBomList(), room.get());
                     } else {
                         //创建新房间
@@ -85,10 +85,13 @@ public class QuoteProcessor extends BaseService {
                         quoteRoom.setRoomType(bomRoom.getRoomType());
                         quoteRoom.setRoomID(bomRoom.getRoomID());
                         quoteRoom.setRoomName(bomRoom.getRoomName());
-                        quoteRoom.setArea(BigDecimal.valueOf(Double.parseDouble(bomRoom.getArea())).setScale(2, BigDecimal.ROUND_HALF_UP));
-                        quoteRoom.setHeight(BigDecimal.valueOf(Double.parseDouble(bomRoom.getHeight())).setScale(2, BigDecimal.ROUND_HALF_UP));
-                        quoteRoom.setPerimeter(BigDecimal.valueOf(Double.parseDouble(bomRoom.getPerimeter())).setScale(2, BigDecimal.ROUND_HALF_UP));
-
+                        quoteRoom.setArea(BigDecimal.valueOf(Double.parseDouble(bomRoom.getArea()))
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
+                        quoteRoom.setHeight(BigDecimal.valueOf(Double.parseDouble(bomRoom.getHeight()))
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
+                        quoteRoom.setPerimeter(BigDecimal.valueOf(Double.parseDouble(bomRoom.getPerimeter()))
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
+                        //初始化解析空间内各类主材数据
                         initMaterialInQuoteRoom(bom.getBomList(), bomRoom, quoteRoom);
                         quote.getRooms().add(quoteRoom);
                     }

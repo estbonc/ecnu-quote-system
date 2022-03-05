@@ -51,15 +51,15 @@ spring:
     urlMappings: /api/*
     jaxrsApplicationClass: com.juran.quote.config.RestJerseyRegister
   redis:
-    host: localhost
+    host: 124.221.115.112
     port: 6379
-    password:
+    password: 123456
     database: 0
 
 mongodb:
   base:
     enabled: true
-    hostPort: 114.55.33.211:27017
+    hostPort: 124.221.115.112:27017
     userName:
     passWord:
     database: quote
@@ -67,7 +67,7 @@ mongodb:
     socketTimeout: 8000   #执行时间超时
     serverSelectionTimeout: 8000   #等待应用程序超时
     accessEnvironment: local  #local:将会采用url方式连接,server:将会采用上面的方式连接
-    url: mongodb://81.69.162.101:27017/quote?socketTimeout=8000&connectTimeout=8000&serverSelectionTimeout=8000
+    url: mongodb://124.221.115.112:27017/quote?socketTimeout=8000&connectTimeout=8000&serverSelectionTimeout=8000
 
 springfox:
   config:
@@ -90,7 +90,7 @@ springfox:
 #  enabled: false
 #  datasource:
 #    driverClassName: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://114.55.33.211:3306/quote?useUnicode=true&characterEncoding=utf-8
+#    url: jdbc:mysql://124.221.115.112:3306/quote?useUnicode=true&characterEncoding=utf-8
 #    username: root
 #    password: Lss@2020
 #    maxActive: 10

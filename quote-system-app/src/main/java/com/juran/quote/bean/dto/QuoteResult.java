@@ -23,5 +23,6 @@ public class QuoteResult {
     //其他收费
     private BigDecimal extraPrice;
 
-    private  BigDecimal hardMaterialPrice;
+    //材料价格
+    private BigDecimal hardMaterialPrice;
 }

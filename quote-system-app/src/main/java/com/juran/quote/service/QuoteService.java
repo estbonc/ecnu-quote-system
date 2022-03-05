@@ -435,10 +435,12 @@ public class QuoteService extends BaseService {
                 varValueBean.setRoomArea(room.getArea());
                 varValueBean.setRoomPerimeter(room.getPerimeter());
                 varValueBean.setRoomHeight(room.getHeight());
+                //根据空间获取施工项
                 getConstructsForRoom(quote.getDecorationCompany(),
                         quote.getQuoteVersionId(),
                         quote.getDecorationTypeId(),
                         quote.getQuoteTypeId(), room, varValueBean, quote.getHouseTypeId());
+                //根据主材获取施工项
                 getConstructsForMaterial(quote.getDecorationCompany(),
                         quote.getQuoteTypeId(),
                         quote.getQuoteVersionId(),
@@ -1252,7 +1254,7 @@ public class QuoteService extends BaseService {
         return null;
     }
 
-
+    //汇总确认信息
     public CommonRespBean getQuoteSummary(Long quoteId) throws QuoteException {
         BigDecimal bagOverPrice = BigDecimal.ZERO;
         Properties properties = new Properties();
@@ -1553,6 +1555,7 @@ public class QuoteService extends BaseService {
         return mongoTemplate.find(new BasicQuery(basicDBObject), QuotePo.class);
     }
 
+    //汇总报价信息
     private GetQuoteSummaryDto getQuoteSummaryDto(QuotePo quotePo, BigDecimal bagOverPrice, List<PackageBag> packageBags) throws QuoteException {
         GetQuoteSummaryDto dto = new GetQuoteSummaryDto();
         List<GetQuoteRoomDetailDto> roomList = getQuoteRoomDetail(quotePo.getQuoteId());
